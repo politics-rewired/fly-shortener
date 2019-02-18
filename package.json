@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "start": "fly server",
+    "fly": "fly"
+  },
+  "devDependencies": {
+    "@fly/fly": "^0.44.9"
+  },
+  "dependencies": {
+    "query-string": "^6.2.0",
+    "url-parse": "^1.4.4"
+  }
+}

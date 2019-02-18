@@ -1,0 +1,8 @@
+app-name: fly-shortener
+config:
+  adminSecret:
+    fromSecret: adminSecret
+  airtableApiKey:
+    fromSecret: airtableApiKey
+  airtableBase:
+    fromSecret: airtableBase
