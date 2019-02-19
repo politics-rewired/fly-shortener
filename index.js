@@ -64,6 +64,7 @@ function update() {
         entries.push(r.fields.From);
       });
 
+      cache.global.del('entries')
       cache.set("entries", JSON.stringify(entries));
       return entries;
     });
