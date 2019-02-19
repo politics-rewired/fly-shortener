@@ -26,8 +26,11 @@ async function route(path, params) {
 
   for (let entry of entries) {
     const regex = new RegExp(entry, "i");
+    console.log(entry)
+    console.log(regex)
     if (path.match(regex)) {
       const destination = await cache.getString(entry);
+      console.log(destination)
       const destinationUrl = new Url(destination);
       const destinationParams = queryString.parse(destinationUrl.query);
       const nextParams = Object.assign(destinationParams, params);
