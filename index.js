@@ -16,20 +16,32 @@ fly.http.respondWith(async request => {
     return new Response(result.join("\n"), { status: 200 });
   }
 
-  return route(url.pathname, params);
+  return route(url.pathname);
 });
 
 // Route the user
-async function route(path, params) {
+async function route(path) {
   let entries = await cache.getString("entries");
-  if (entries) entries = JSON.parse(entries);
-  else entries = await update();
+  let didUpdate = false;
+  if (entries) {
+    entries = JSON.parse(entries);
+  } else {
+    didUpdate = true;
+    entries = await update();
+  }
 
   for (let entry of entries) {
     const regex = new RegExp(entry, "i");
     if (path.match(regex)) {
       const html = await cache.getString(entry);
-      return new Response(html, { status: 200 });
+
+      if (didUpdate) {
+        return new Response(html.replace("<head>", '<head updated="true">'), {
+          status: 200
+        });
+      } else {
+        return new Response(html, { status: 200 });
+      }
     }
   }
 }
