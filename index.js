@@ -1,5 +1,6 @@
 import Url from "url-parse";
 import queryString from "query-string";
+import getMeta from "lets-get-meta";
 import cache from "@fly/cache";
 
 // Main handler
@@ -26,46 +27,68 @@ async function route(path, params) {
 
   for (let entry of entries) {
     const regex = new RegExp(entry, "i");
-    console.log(entry)
-    console.log(regex)
     if (path.match(regex)) {
-      const destination = await cache.getString(entry);
-      console.log(destination)
-      const destinationUrl = new Url(destination);
-      const destinationParams = queryString.parse(destinationUrl.query);
-      const nextParams = Object.assign(destinationParams, params);
-
-      destinationUrl.set("query", queryString.stringify(nextParams));
-
-      return new Response("Redirecting", {
-        status: 302,
-        headers: { Location: destinationUrl.toString() }
-      });
+      const html = await cache.getString(entry);
+      return new Response(html, { status: 200 });
     }
   }
 }
 
 // Update routes
-function update() {
+async function update() {
   const entries = [];
 
-  return fetch(
+  const { records } = await fetch(
     `https://api.airtable.com/v0/${app.config.airtableBase}/Shortlinks`,
     {
       headers: {
         Authorization: `Bearer ${app.config.airtableApiKey}`
       }
     }
-  )
-    .then(response => response.json())
-    .then(body => {
-      body.records.forEach(r => {
-        cache.set(r.fields.From, r.fields.To, { ttl: 86400 });
-        entries.push(r.fields.From);
-      });
+  ).then(response => response.json());
 
-      cache.global.del('entries')
-      cache.set("entries", JSON.stringify(entries));
-      return entries;
-    });
+  await Promise.all(records.map(persistRecordWithMetadata));
+
+  for (let record of records) {
+    entries.push(record.fields.From);
+  }
+
+  cache.global.del("entries");
+  cache.set("entries", JSON.stringify(entries));
+  return entries;
+}
+
+const opts = { ttl: 86400 };
+async function persistRecordWithMetadata(r) {
+  /* Try to fetch metadata and join it with the refresh redirect in the cache */
+  try {
+    const html = await fetch(r.fields.To).then(response => response.text());
+
+    const metas = getMeta(html);
+    metas.refresh = r.fields.To;
+
+    const resultString = `
+      <html><head>
+      ${Object.entries(metas)
+        .map(([key, value]) =>
+          key === "refresh"
+            ? `<meta http-equiv="${key}" content="0;${value}" />`
+            : `<meta name="${key}" content="0;${value}" />`
+        )
+        .join("\n")}
+      </head></html>
+    `;
+
+    cache.set(r.fields.From, resultString, opts);
+  } catch (ex) {
+    /* Fallback to just meta refresh redirect */
+    console.log(`Could not fetch metadata for ${r.fields.To}`);
+    cache.set(
+      r.fields.From,
+      `<html><head>
+        <meta http-equiv="refresh" content="0;${r.fields.To}"/>
+      </head></html>`,
+      opts
+    );
+  }
 }
