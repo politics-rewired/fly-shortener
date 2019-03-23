@@ -23,6 +23,7 @@ fly.http.respondWith(async request => {
 async function route(path) {
   let entries = await cache.getString("entries");
   let didUpdate = false;
+
   if (entries) {
     entries = JSON.parse(entries);
   } else {
@@ -65,8 +66,8 @@ async function update() {
     entries.push(record.fields.From);
   }
 
-  cache.global.del("entries");
-  cache.set("entries", JSON.stringify(entries));
+  await cache.global.del("entries");
+  await cache.set("entries", JSON.stringify(entries));
   return entries;
 }
 
@@ -91,7 +92,7 @@ async function persistRecordWithMetadata(r) {
       </head></html>
     `;
 
-    cache.set(r.fields.From, resultString, opts);
+    await cache.set(r.fields.From, resultString, opts);
   } catch (ex) {
     /* Fallback to just meta refresh redirect */
     console.log(`Could not fetch metadata for ${r.fields.To}`);
