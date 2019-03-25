@@ -14,6 +14,12 @@ fly.http.respondWith(async request => {
   ) {
     const result = await update();
     return new Response(result.join("\n"), { status: 200 });
+  } else if (
+    url.pathname.includes("/clear") &&
+    params.secret == app.config.adminSecret
+  ) {
+    const result = await clear();
+    return new Response(result, { status: 200 });
   }
 
   return route(url.pathname);
@@ -47,6 +53,11 @@ async function route(path) {
   }
 }
 
+// Clear all previous data
+async function clear() {
+  await cache.global.del("entries");
+}
+
 // Update routes
 async function update() {
   const entries = [];
@@ -66,7 +77,6 @@ async function update() {
     entries.push(record.fields.From);
   }
 
-  await cache.global.del("entries");
   await cache.set("entries", JSON.stringify(entries));
   return entries;
 }
