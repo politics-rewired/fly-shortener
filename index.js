@@ -19,7 +19,7 @@ fly.http.respondWith(async request => {
     params.secret == app.config.adminSecret
   ) {
     const result = await clear();
-    return new Response(result, { status: 200 });
+    return new Response('OK', { status: 200 });
   }
 
   return route(url.pathname);
