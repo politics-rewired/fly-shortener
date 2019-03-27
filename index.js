@@ -19,7 +19,7 @@ fly.http.respondWith(async request => {
     params.secret == app.config.adminSecret
   ) {
     const result = await clear();
-    return new Response('OK', { status: 200 });
+    return new Response("OK", { status: 200 });
   }
 
   return route(url.pathname);
@@ -38,8 +38,7 @@ async function route(path) {
   }
 
   for (let entry of entries) {
-    const regex = new RegExp(entry, "i");
-    if (path.match(regex)) {
+    if (path === entry) {
       const html = await cache.getString(entry);
 
       if (didUpdate) {
