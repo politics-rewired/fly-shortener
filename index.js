@@ -25,6 +25,10 @@ fly.http.respondWith(async request => {
   return route(url.pathname);
 });
 
+function normalize(string) {
+  return string.toLowerCase().trim();
+}
+
 // Route the user
 async function route(path) {
   let entries = await cache.getString("entries");
@@ -37,8 +41,10 @@ async function route(path) {
     entries = await update();
   }
 
+  const normalizedPath = normalize(path);
   for (let entry of entries) {
-    if (path === entry) {
+    const normalizedEntry = normalize(entry);
+    if (normalizedPath === normalizedEntry) {
       const html = await cache.getString(entry);
 
       if (didUpdate) {
