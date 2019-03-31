@@ -12,8 +12,8 @@ fly.http.respondWith(async request => {
     url.pathname.includes("/update") &&
     params.secret == app.config.adminSecret
   ) {
-    const result = await update();
-    return new Response(result.join("\n"), { status: 200 });
+    const result = await clear();
+    return new Response("OK", { status: 200 });
   } else if (
     url.pathname.includes("/clear") &&
     params.secret == app.config.adminSecret
