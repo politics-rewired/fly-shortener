@@ -63,18 +63,32 @@ async function clear() {
   await cache.global.del("entries");
 }
 
+async function fetchAll(acc = [], offset) {
+  let url = `https://api.airtable.com/v0/${app.config.airtableBase}/Shortlinks`;
+
+  if (offset) {
+    url += `?offset=${offset}`;
+  }
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${app.config.airtableApiKey}`
+    }
+  }).then(response => response.json());
+
+  const records = acc.concat(response.records);
+  if (response.offset) {
+    return await fetchAll(records, response.offset);
+  } else {
+    return records;
+  }
+}
+
 // Update routes
 async function update() {
   const entries = [];
 
-  const { records } = await fetch(
-    `https://api.airtable.com/v0/${app.config.airtableBase}/Shortlinks`,
-    {
-      headers: {
-        Authorization: `Bearer ${app.config.airtableApiKey}`
-      }
-    }
-  ).then(response => response.json());
+  const records = await fetchAll();
 
   await Promise.all(records.map(persistRecordWithMetadata));
 
