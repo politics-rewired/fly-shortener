@@ -101,7 +101,7 @@ async function persistRecordWithMetadata(r) {
         .map(([key, value]) =>
           key === "refresh"
             ? `<meta http-equiv="${key}" content="0;${value}" />`
-            : `<meta name="${key}" content="0;${value}" />`
+            : `<meta name="${key}" content="${value}" />`
         )
         .join("\n")}
       </head></html>
