@@ -20,6 +20,18 @@ fly.http.respondWith(async request => {
   ) {
     const result = await clear();
     return new Response("OK", { status: 200 });
+  } else if (url.pathname.includes("/event/")) {
+    const now = new Date();
+    const sourceDateComponent = `${now.getMonth() + 1}${now.getDate()}`;
+
+    return new Response("Redirecting...", {
+      status: 302,
+      headers: {
+        Location: `https://act.berniesanders.com${
+          url.pathname
+        }?source=sms${sourceDateComponent}`
+      }
+    });
   }
 
   return route(url.pathname);
@@ -90,6 +102,16 @@ async function update() {
 
   const records = await fetchAll();
 
+  // Forcing error
+  records.push({
+    id: "dummy",
+    fields: {
+      Name: null,
+      From: null,
+      To: null
+    }
+  });
+
   await Promise.all(records.map(persistRecordWithMetadata));
 
   for (let record of records) {
@@ -125,7 +147,7 @@ async function persistRecordWithMetadata(r) {
   } catch (ex) {
     /* Fallback to just meta refresh redirect */
     console.log(`Could not fetch metadata for ${r.fields.To}`);
-    cache.set(
+    await cache.set(
       r.fields.From,
       `<html><head>
         <meta http-equiv="refresh" content="0;${r.fields.To}"/>
