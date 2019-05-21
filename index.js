@@ -102,16 +102,6 @@ async function update() {
 
   const records = await fetchAll();
 
-  // Forcing error
-  records.push({
-    id: "dummy",
-    fields: {
-      Name: null,
-      From: null,
-      To: null
-    }
-  });
-
   await Promise.all(records.map(persistRecordWithMetadata));
 
   for (let record of records) {
