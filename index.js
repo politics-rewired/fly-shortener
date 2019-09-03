@@ -64,7 +64,10 @@ async function route(path) {
           status: 200
         });
       } else {
-        return new Response(html, { status: 200 });
+        return new Response(html, {
+          status: 200,
+          headers: { "content-type": "text/html" }
+        });
       }
     }
   }
