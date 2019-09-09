@@ -2,6 +2,7 @@ import Url from "url-parse";
 import queryString from "query-string";
 import getMeta from "lets-get-meta";
 import cache from "@fly/cache";
+import moment from "moment";
 
 // Main handler
 fly.http.respondWith(async request => {
@@ -20,18 +21,6 @@ fly.http.respondWith(async request => {
   ) {
     const result = await clear();
     return new Response("OK", { status: 200 });
-  } else if (url.pathname.includes("/event/")) {
-    const now = new Date();
-    const sourceDateComponent = `${now.getMonth() + 1}${now.getDate()}`;
-
-    return new Response("Redirecting...", {
-      status: 302,
-      headers: {
-        Location: `https://act.berniesanders.com${
-          url.pathname
-        }?source=sms${sourceDateComponent}`
-      }
-    });
   }
 
   return route(url.pathname);
@@ -44,17 +33,41 @@ function normalize(string) {
 // Route the user
 async function route(path) {
   let entries = await cache.getString("entries");
+  let regexEntries = await cache.getString("regex-entries");
+
   let didUpdate = false;
 
-  if (entries) {
-    entries = JSON.parse(entries);
+  if (!entries || !regexEntries) {
+    const updateResult = await update();
+    entries = updateResult.entries;
+    regexEntries = updateResult.regexEntries;
   } else {
-    didUpdate = true;
-    entries = await update();
+    entries = JSON.parse(entries);
+    regexEntries = JSON.parse(regexEntries);
   }
 
   const normalizedPath = normalize(path);
-  for (let entry of entries) {
+
+  for (const [pattern, replacement] of regexEntries) {
+    if (normalizedPath.match(pattern)) {
+      let destination = normalizedPath.replace(
+        new RegExp(pattern, "g"),
+        replacement
+      );
+
+      const currentYYMMDD = moment().format("YYMMDD");
+      destination = destination.replace(/YYMMDD/g, currentYYMMDD);
+
+      return new Response("Redirecting...", {
+        status: 302,
+        headers: {
+          Location: destination
+        }
+      });
+    }
+  }
+
+  for (const entry of entries) {
     const normalizedEntry = normalize(entry);
     if (normalizedPath === normalizedEntry) {
       const html = await cache.getString(entry);
@@ -102,17 +115,29 @@ async function fetchAll(acc = [], offset) {
 // Update routes
 async function update() {
   const entries = [];
+  const regexEntries = [];
 
   const records = await fetchAll();
 
-  await Promise.all(records.map(persistRecordWithMetadata));
+  const isRegexRecord = r => r.fields.Regex;
 
-  for (let record of records) {
+  const regularRecords = records.filter(r => !isRegexRecord(r));
+  const regexRecords = records.filter(r => isRegexRecord(r));
+
+  await Promise.all(regularRecords.map(persistRecordWithMetadata));
+
+  for (let record of regularRecords) {
     entries.push(record.fields.From);
   }
 
+  for (let record of regexRecords) {
+    console.log("TCL: update -> record", record);
+    regexEntries.push([record.fields.From, record.fields.To]);
+  }
+
   await cache.set("entries", JSON.stringify(entries));
-  return entries;
+  await cache.set("regex-entries", JSON.stringify(regexEntries));
+  return { entries, regexEntries };
 }
 
 const opts = { ttl: 86400 };

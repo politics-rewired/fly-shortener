@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "lets-get-meta": "^2.1.1",
+    "moment": "^2.24.0",
     "query-string": "^6.2.0",
     "url-parse": "^1.4.4"
   }
