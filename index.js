@@ -131,7 +131,6 @@ async function update() {
   }
 
   for (let record of regexRecords) {
-    console.log("TCL: update -> record", record);
     regexEntries.push([record.fields.From, record.fields.To]);
   }
 
@@ -144,10 +143,13 @@ const opts = { ttl: 86400 };
 async function persistRecordWithMetadata(r) {
   /* Try to fetch metadata and join it with the refresh redirect in the cache */
   try {
+    const currentYYMMDD = moment().format("YYMMDD");
+    destination = r.fields.To.replace(/YYMMDD/g, currentYYMMDD);
+
     const html = await fetch(r.fields.To).then(response => response.text());
 
     const metas = getMeta(html);
-    metas.refresh = r.fields.To;
+    metas.refresh = destination;
 
     const resultString = `
       <html><head>
@@ -164,7 +166,6 @@ async function persistRecordWithMetadata(r) {
     await cache.set(r.fields.From, resultString, opts);
   } catch (ex) {
     /* Fallback to just meta refresh redirect */
-    console.log(`Could not fetch metadata for ${r.fields.To}`);
     await cache.set(
       r.fields.From,
       `<html><head>
