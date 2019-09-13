@@ -144,7 +144,8 @@ async function persistRecordWithMetadata(r) {
   /* Try to fetch metadata and join it with the refresh redirect in the cache */
   try {
     const currentYYMMDD = moment().format("YYMMDD");
-    destination = r.fields.To.replace(/YYMMDD/g, currentYYMMDD);
+
+    const destination = r.fields.To.replace(/YYMMDD/g, currentYYMMDD);
 
     const html = await fetch(r.fields.To).then(response => response.text());
 
