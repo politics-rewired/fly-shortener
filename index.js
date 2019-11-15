@@ -108,7 +108,7 @@ async function fetchAll(acc = [], offset) {
   if (response.offset) {
     return await fetchAll(records, response.offset);
   } else {
-    return records;
+    return records.filter(r => !!r.fields.To || !!r.fields.From);
   }
 }
 
