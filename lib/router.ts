@@ -6,6 +6,7 @@ import {
   clearCache,
   refreshCache,
   lookupPath,
+  resourceNotFoundResponse,
   CACHE_TAG,
   TTL_404
 } from "./shortener";
@@ -68,7 +69,7 @@ const routeShortlink = async (req: Request): Promise<Response> => {
   }
 
   await cache.set(path, "404", { ttl: TTL_404, tags: [CACHE_TAG] });
-  return new Response("", { status: 404 });
+  return resourceNotFoundResponse();
 };
 
 /**

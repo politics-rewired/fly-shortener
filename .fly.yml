@@ -2,6 +2,8 @@ app-name: fly-shortener
 config:
   adminSecret:
     fromSecret: adminSecret
+  fallbackUrl:
+    fromSecret: fallbackUrl
   googleSheetDocId:
     fromSecret: googleSheetDocId
   googleServiceAccountEmail:

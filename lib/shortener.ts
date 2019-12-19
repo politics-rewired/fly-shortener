@@ -78,13 +78,25 @@ const persistRecordWithMetadata = async (record: LinkRecord) => {
   }
 };
 
+export const resourceNotFoundResponse = () =>
+  app.config.fallbackUrl
+    ? new Response("Redirecting...", {
+        status: 302,
+        headers: {
+          Location: app.config.fallbackUrl
+        }
+      })
+    : new Response("The specified route could not be found", {
+        status: 404
+      });
+
 export const lookupPath = async (path: string) => {
   // Look for exact match
   const matchingEntry = await cache.getString(path);
   if (matchingEntry) {
     // Short-lived cache to prevent duplicate updates for links that were not present
     if (matchingEntry === "404") {
-      return new Response("", { status: 404 });
+      return resourceNotFoundResponse();
     }
     return new Response(matchingEntry, {
       status: 200,
