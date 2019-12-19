@@ -4,6 +4,7 @@ import * as moment from "moment";
 import { LinkRecord } from "./types";
 
 const CacheKeys = Object.freeze({
+  GoogleAccessToken: "token-key",
   RegexEntries: "regex-entries",
   EntryTag: "entry"
 });
@@ -19,7 +20,16 @@ const cacheOpts = { ttl: cacheTtl, tags: [CacheKeys.EntryTag] };
 const regexReducer = (acc: string[][], current: LinkRecord): string[][] =>
   acc.concat([[current.from, current.to]]);
 
-const clear = async () => {
+const clearGoogle = async () => cache.global.del(CacheKeys.GoogleAccessToken);
+
+const getGoogleAccessToken = async (): Promise<string> =>
+  cache.getString(CacheKeys.GoogleAccessToken);
+
+// Google access tokens are valid for one hour; store for 55 minutes to be safe
+const setGoogleAccessToken = async (accessToken: string): Promise<string> =>
+  cache.set(CacheKeys.GoogleAccessToken, accessToken, { ttl: 60 * 55 });
+
+const clearEntries = async () => {
   await cache.global.del(CacheKeys.RegexEntries);
   await cache.global.purgeTag(CacheKeys.EntryTag);
 };
@@ -47,7 +57,10 @@ const setRegexEntries = async (entries: LinkRecord[]) => {
 };
 
 export default {
-  clear,
+  clearGoogle,
+  getGoogleAccessToken,
+  setGoogleAccessToken,
+  clearEntries,
   getEntry,
   setEntry,
   set404Entry,

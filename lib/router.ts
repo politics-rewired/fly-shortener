@@ -29,12 +29,13 @@ const routeAdmin = async (req: Request): Promise<Response> => {
   }
 
   if (pathname.includes("/clear")) {
-    await cache.clear();
+    await cache.clearGoogle();
+    await cache.clearEntries();
     return new Response("Cleared", { status: 200 });
   }
 
   if (pathname.includes("/refresh")) {
-    await cache.clear();
+    await cache.clearEntries();
     await refreshCache();
     return new Response("Refreshed", { status: 200 });
   }
@@ -57,7 +58,12 @@ const routeShortlink = async (req: Request): Promise<Response> => {
   }
 
   // Refresh the cache if no match
-  await refreshCache();
+  try {
+    await refreshCache();
+  } catch (err) {
+    const message = "An internal error occured. Please try again later.";
+    return new Response(message, { status: 500 });
+  }
 
   // Re-check for match
   matchingResponse = await lookupPath(path);
