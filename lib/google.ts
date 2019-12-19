@@ -1,11 +1,11 @@
 import * as jwt from "jwt-simple";
 
+import { LinkRecord } from "./types";
+
 const SERVICE_ENDPOINT = "https://sheets.googleapis.com";
 
 // We only care about From, To, and Is Regex
 const A1_RANGE = "B2:D";
-
-export type LinkRecord = { from: string; to: string; isRegex: boolean };
 
 export const createAuthJwt = () => {
   const claims = {
