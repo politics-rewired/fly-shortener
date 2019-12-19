@@ -82,7 +82,7 @@ export const route = async (req: Request): Promise<Response> => {
     return new Response("", { status: 404 });
   }
 
-  if (pathname.includes("/admin")) {
+  if (pathname.startsWith("/admin")) {
     return routeAdmin(req);
   }
 
