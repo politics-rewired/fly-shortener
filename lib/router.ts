@@ -1,5 +1,4 @@
 import * as Url from "url-parse";
-import * as queryString from "query-string";
 import cache from "@fly/cache";
 
 import {
@@ -12,9 +11,8 @@ import {
 } from "./shortener";
 
 export const parseReq = (req: Request) => {
-  const url = new Url(req.url);
-  const { pathname } = url;
-  const params = queryString.parse(url.query);
+  const url = new Url(req.url, true);
+  const { pathname, query: params } = url;
   return { url, pathname, params };
 };
 
