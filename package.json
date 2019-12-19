@@ -3,8 +3,13 @@
     "start": "fly server",
     "fly": "fly"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/url-parse": "^1.4.3",
+    "ts-loader": "^3.3.1",
+    "typescript": "^3.7.3"
+  },
   "dependencies": {
+    "jwt-simple": "^0.5.6",
     "lets-get-meta": "^2.1.1",
     "moment": "^2.24.0",
     "query-string": "^6.2.0",
