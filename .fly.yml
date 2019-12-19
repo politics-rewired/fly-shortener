@@ -2,7 +2,11 @@ app-name: fly-shortener
 config:
   adminSecret:
     fromSecret: adminSecret
-  airtableApiKey:
-    fromSecret: airtableApiKey
-  airtableBase:
-    fromSecret: airtableBase
+  fallbackUrl:
+    fromSecret: fallbackUrl
+  googleSheetDocId:
+    fromSecret: googleSheetDocId
+  googleServiceAccountEmail:
+    fromSecret: googleServiceAccountEmail
+  googleServiceAccountKey:
+    fromSecret: googleServiceAccountKey
