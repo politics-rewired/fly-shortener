@@ -12,9 +12,8 @@ Create a service account on Google Cloud and download the JSON credentials. This
 
 ### Create Google Sheets Doc
 
-It should have one sheet with the following columns in order:
+It should have one sheet with the following columns in order. There can be other columns, these three just need to be next to each other in this order.
 
-1. **Name** -- The name of the link
 1. **From** -- The URL path on the shortener
     - ex. `/sat-event`
 1. **To** -- The destination URL. This supports using a special `YYMMDD` sequence that will be replaced with the current date (useful for tracking campaigns)
@@ -25,6 +24,8 @@ It should have one sheet with the following columns in order:
 Grant read access on the document to the service account email address.
 
 Copy the document ID from the URL.
+
+Copy the range of the short links in [A1 notation](https://developers.google.com/sheets/api/guides/concepts#a1_notation).
 
 ### Install `fly`
 
@@ -39,6 +40,7 @@ Clone this repo and create a local secrets file
 adminSecret: SomethingSecret
 fallbackUrl: https://mydomain.com/default-path
 googleSheetDocId: XXXXXXXXXX-XXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+googleSheetRange: "'Sheet 1'!B2:D"
 googleServiceAccountEmail: [service-account]@[project-id].iam.gserviceaccount.com
 googleServiceAccountKey: "-----BEGIN PRIVATE KEY-----\nYourServiceAccountPrivateKey\n-----END PRIVATE KEY-----\n"
 ```

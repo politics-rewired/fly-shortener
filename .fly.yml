@@ -6,6 +6,8 @@ config:
     fromSecret: fallbackUrl
   googleSheetDocId:
     fromSecret: googleSheetDocId
+  googleSheetRange:
+    fromSecret: googleSheetRange
   googleServiceAccountEmail:
     fromSecret: googleServiceAccountEmail
   googleServiceAccountKey:

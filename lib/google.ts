@@ -5,9 +5,6 @@ import { LinkRecord } from "./types";
 
 const SERVICE_ENDPOINT = "https://sheets.googleapis.com";
 
-// We only care about From, To, and Is Regex
-const A1_RANGE = "B2:D";
-
 export const createAuthJwt = () => {
   const claims = {
     iss: app.config.googleServiceAccountEmail,
@@ -42,7 +39,8 @@ export const fetchEntries = async (isRetry = false): Promise<LinkRecord[]> => {
   const accessToken = await getAccessToken();
 
   const docId = app.config.googleSheetDocId;
-  const url = `${SERVICE_ENDPOINT}/v4/spreadsheets/${docId}/values/${A1_RANGE}?access_token=${accessToken}`;
+  const a1Range = encodeURI(app.config.googleSheetRange);
+  const url = `${SERVICE_ENDPOINT}/v4/spreadsheets/${docId}/values/${a1Range}?access_token=${accessToken}`;
   const response = await fetch(url);
 
   if (!response.ok) {
