@@ -1,6 +1,6 @@
 import * as Url from "url-parse";
 
-import cache from "./cache";
+import cache, { normalize } from "./cache";
 import {
   refreshCache,
   lookupPath,
@@ -12,8 +12,6 @@ export const parseReq = (req: Request) => {
   const { pathname, query: params } = url;
   return { url, pathname, params };
 };
-
-const normalize = (str: string) => str.toLowerCase().trim();
 
 /**
  * Handle admin routing
