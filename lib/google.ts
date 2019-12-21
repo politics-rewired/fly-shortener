@@ -1,6 +1,6 @@
 import * as jwt from "jwt-simple";
 
-import cache from "./cache";
+import cache, { normalize } from "./cache";
 import { LinkRecord } from "./types";
 
 const SERVICE_ENDPOINT = "https://sheets.googleapis.com";
@@ -59,7 +59,7 @@ export const fetchEntries = async (isRetry = false): Promise<LinkRecord[]> => {
   // Make sure that record has From and To values
   return rows
     .map(row => ({
-      from: row[0],
+      from: normalize(row[0]),
       to: row[1],
       isRegex: row[2] === "TRUE"
     }))

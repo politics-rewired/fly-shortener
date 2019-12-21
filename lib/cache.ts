@@ -56,6 +56,8 @@ const setRegexEntries = async (entries: LinkRecord[]) => {
   return cache.set(CacheKeys.RegexEntries, regexEntry, { ttl: cacheTtl });
 };
 
+export const normalize = (str: string) => str.toLowerCase().trim();
+
 export default {
   clearGoogle,
   getGoogleAccessToken,
