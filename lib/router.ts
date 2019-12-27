@@ -53,9 +53,9 @@ const routeShortlink = async (req: Request): Promise<Response> => {
     return matchingResponse;
   }
 
-  // Refresh the cache if no match
+  // Refresh the cache for this path if no match
   try {
-    await refreshCache();
+    await refreshCache(path);
   } catch (err) {
     const message = "An internal error occured. Please try again later.";
     return new Response(message, { status: 500 });

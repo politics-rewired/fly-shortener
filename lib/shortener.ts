@@ -5,7 +5,7 @@ import cache from "./cache";
 import { fetchEntries } from "./google";
 import { LinkRecord } from "./types";
 
-export const refreshCache = async () => {
+export const refreshCache = async (path?: string) => {
   const rows = await fetchEntries();
 
   // Persist list of regex entries to cache
@@ -13,9 +13,11 @@ export const refreshCache = async () => {
   const regexEntriesPromise = cache.setRegexEntries(regexEntries);
 
   // Persist metadata of regular links to cache
-  const regularEntriesPromise = rows
-    .filter(r => !r.isRegex)
-    .map(persistRecordWithMetadata);
+  let regularEntries = rows.filter(r => !r.isRegex);
+  if (path) {
+    regularEntries = regularEntries.filter(r => r.from === path);
+  }
+  const regularEntriesPromise = regularEntries.map(persistRecordWithMetadata);
 
   return Promise.all([regexEntriesPromise, ...regularEntriesPromise]);
 };
