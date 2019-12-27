@@ -1,4 +1,4 @@
-import * as jwt from "jwt-simple";
+const { KJUR, KEYUTIL } = require("jsrsasign");
 
 import cache, { normalize } from "./cache";
 import { LinkRecord } from "./types";
@@ -6,15 +6,20 @@ import { LinkRecord } from "./types";
 const SERVICE_ENDPOINT = "https://sheets.googleapis.com";
 
 export const createAuthJwt = () => {
-  const claims = {
+  const header = JSON.stringify({ alg: "RS256", typ: "JWT" });
+  const payload = JSON.stringify({
     iss: app.config.googleServiceAccountEmail,
     scope: "https://www.googleapis.com/auth/spreadsheets.readonly",
     aud: "https://oauth2.googleapis.com/token",
-    exp: Math.floor(Date.now() / 1000) + 5 * 60,
-    iat: Math.floor(Date.now() / 1000)
-  };
+    nbf: Math.floor(Date.now() / 1000),
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 5 * 60
+  });
 
-  return jwt.encode(claims, app.config.googleServiceAccountKey, "RS256");
+  const rawPrivateKey = app.config.googleServiceAccountKey;
+  const unescapedPrivateKey = rawPrivateKey.replace(/\\n/g, "\n");
+  const privateKey = KEYUTIL.getKey(unescapedPrivateKey);
+  return KJUR.jws.JWS.sign("RS256", header, payload, privateKey);
 };
 
 export const getAccessToken = async () => {
