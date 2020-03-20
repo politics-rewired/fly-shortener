@@ -11,11 +11,13 @@ const CacheKeys = Object.freeze({
 
 const TTL_404 = 5 * 60;
 
-// Expire record at the end of the day. Only need to compute these once per invocation
-const cacheTtl = moment()
-  .endOf("day")
-  .diff(moment(), "seconds");
-const cacheOpts = { ttl: cacheTtl, tags: [CacheKeys.EntryTag] };
+// Expire record at the end of the day. Compute every time to prevent caching by Fly
+const eodTtl = () =>
+  moment()
+    .endOf("day")
+    .diff(moment(), "seconds");
+
+const eodCacheOpts = () => ({ ttl: eodTtl(), tags: [CacheKeys.EntryTag] });
 
 const regexReducer = (acc: string[][], current: LinkRecord): string[][] =>
   acc.concat([[current.from, current.to]]);
@@ -38,6 +40,7 @@ const getEntry = async (path: string) =>
   cache.getString(`${CacheKeys.EntryTag}:${path}`);
 
 const setEntry = async (path: string, content: string, ttl?: number) => {
+  const cacheOpts = eodCacheOpts();
   const options = ttl ? Object.assign(cacheOpts, { ttl }) : cacheOpts;
   // Prefix path to avoid collisions with internal cache keys
   return cache.set(`${CacheKeys.EntryTag}:${path}`, content, options);
@@ -53,7 +56,7 @@ const getRegexEntries = async (): Promise<string[][]> => {
 const setRegexEntries = async (entries: LinkRecord[]) => {
   const regexEntries = entries.reduce(regexReducer, []);
   const regexEntry = JSON.stringify(regexEntries);
-  return cache.set(CacheKeys.RegexEntries, regexEntry, { ttl: cacheTtl });
+  return cache.set(CacheKeys.RegexEntries, regexEntry, { ttl: eodTtl() });
 };
 
 export const normalize = (str: string) => str.toLowerCase().trim();

@@ -22,9 +22,6 @@ export const refreshCache = async (path?: string) => {
   return Promise.all([regexEntriesPromise, ...regularEntriesPromise]);
 };
 
-// Only need to compute these once per invocation
-const currentYYMMDD = moment().format("YYMMDD");
-
 /**
  * Create a one-day cache entry for a short link record containing minimal html comprised of the
  * destination URLs metadata, if it can be fetched, and the necessary redirect meta tag.
@@ -32,6 +29,7 @@ const currentYYMMDD = moment().format("YYMMDD");
  * @param record The short link record from the source spreadsheet to persist
  */
 const persistRecordWithMetadata = async (record: LinkRecord) => {
+  const currentYYMMDD = moment().format("YYMMDD");
   const destination = record.to.replace(/YYMMDD/g, currentYYMMDD);
 
   try {
