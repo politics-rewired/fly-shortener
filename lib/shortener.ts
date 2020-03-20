@@ -66,11 +66,15 @@ export const resourceNotFoundResponse = () =>
     ? new Response("Redirecting...", {
         status: 302,
         headers: {
+          "Cache-Control": "no-cache",
           Location: app.config.fallbackUrl
         }
       })
     : new Response("The specified route could not be found", {
-        status: 404
+        status: 404,
+        headers: {
+          "Cache-Control": "no-cache"
+        }
       });
 
 export const lookupPath = async (path: string) => {
@@ -83,7 +87,10 @@ export const lookupPath = async (path: string) => {
     }
     return new Response(matchingEntry, {
       status: 200,
-      headers: { "content-type": "text/html" }
+      headers: {
+        "Cache-Control": "no-cache",
+        "content-type": "text/html"
+      }
     });
   }
 
@@ -99,6 +106,7 @@ export const lookupPath = async (path: string) => {
       return new Response("Redirecting...", {
         status: 302,
         headers: {
+          "Cache-Control": "no-cache",
           Location: destination
         }
       });
