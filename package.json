@@ -11,18 +11,28 @@
   "repository": "github:politics-rewired/fly-shortener",
   "bugs": "https://github.com/politics-rewired/fly-shortener/issues",
   "scripts": {
-    "start": "fly server",
-    "fly": "fly"
+    "start": "ts-node src/server.ts",
+    "build": "tsc"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "envalid": "^7.0.0",
+    "express": "^4.17.1",
+    "ioredis": "^4.23.0",
+    "ioredis-mock": "^5.2.4",
     "jsrsasign": "^8.0.12",
     "lets-get-meta": "^2.1.1",
-    "moment": "^2.24.0",
-    "url-parse": "^1.4.4"
+    "luxon": "^1.26.0",
+    "promise-retry": "^2.0.1",
+    "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "@types/url-parse": "^1.4.3",
-    "ts-loader": "^3.3.1",
-    "typescript": "^3.7.3"
+    "@types/express": "^4.17.11",
+    "@types/ioredis": "^4.22.0",
+    "@types/luxon": "^1.26.2",
+    "@types/promise-retry": "^1.1.3",
+    "@types/superagent": "^4.1.10",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   }
 }
