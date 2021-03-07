@@ -30,7 +30,7 @@
     "express": "^4.17.1",
     "ioredis": "^4.23.0",
     "ioredis-mock": "^5.2.4",
-    "jsrsasign": "^8.0.12",
+    "jsrsasign": "^8.0.19",
     "lets-get-meta": "^2.1.1",
     "luxon": "^1.26.0",
     "promise-retry": "^2.0.1",
