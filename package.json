@@ -1,17 +1,27 @@
 {
+  "name": "fly-shortener",
+  "version": "0.1.0",
+  "description": "A basic Redis-backed link shortener backed by Google Sheets.",
+  "author": {
+    "name": "Benjamin Chrobot",
+    "email": "benjamin.chrobot@alum.mit.edu",
+    "url": "https://benjaminchrobot.com"
+  },
+  "repository": "github:politics-rewired/fly-shortener",
+  "bugs": "https://github.com/politics-rewired/fly-shortener/issues",
   "scripts": {
     "start": "fly server",
     "fly": "fly"
-  },
-  "devDependencies": {
-    "@types/url-parse": "^1.4.3",
-    "ts-loader": "^3.3.1",
-    "typescript": "^3.7.3"
   },
   "dependencies": {
     "jsrsasign": "^8.0.12",
     "lets-get-meta": "^2.1.1",
     "moment": "^2.24.0",
     "url-parse": "^1.4.4"
+  },
+  "devDependencies": {
+    "@types/url-parse": "^1.4.3",
+    "ts-loader": "^3.3.1",
+    "typescript": "^3.7.3"
   }
 }
