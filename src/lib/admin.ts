@@ -5,7 +5,6 @@ import { Cache } from "./cache";
 import { Shortener } from "./shortener";
 
 const adminAuth: express.RequestHandler = (req, res, next) => {
-  console.log(req.path);
   if (req.query.secret !== config.adminSecret) {
     return res.status(403).send("Unauthorized");
   }
