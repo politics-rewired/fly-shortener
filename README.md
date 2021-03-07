@@ -29,24 +29,28 @@ Copy the range of the short links in [A1 notation](https://developers.google.com
 
 ### Install `fly`
 
-See [installation docs](https://fly.io/docs/apps/#installation) for platform-specific instructions.
+See [installation docs](https://fly.io/docs/getting-started/installing-flyctl/) for platform-specific instructions.
+
+### Create Fly Configuration
+
+```sh
+cp fly.toml.example fly.prod.toml
+vi fly.prod.toml
+```
 
 ### Configure Secrets
 
-Clone this repo and create a local secrets file
+Set application environment variables via [Fly Secrets](https://fly.io/docs/reference/secrets/):
 
-```yaml
-# .fly.secrets.yaml
-adminSecret: SomethingSecret
-fallbackUrl: https://mydomain.com/default-path
-googleSheetDocId: XXXXXXXXXX-XXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-googleSheetRange: "'Sheet 1'!B2:D"
-googleServiceAccountEmail: [service-account]@[project-id].iam.gserviceaccount.com
-googleServiceAccountKey: "-----BEGIN PRIVATE KEY-----\nYourServiceAccountPrivateKey\n-----END PRIVATE KEY-----\n"
+```sh
+cp .env.example .env.prod
+vi .env.prod
+
+awk '!/^#/ && NF' .env.prod | xargs -p flyctl secrets set --config fly.prod.toml
 ```
 
 ### Run `fly`
 
 ```sh
-fly server
+flyctl deploy --config fly.prod.toml
 ```
