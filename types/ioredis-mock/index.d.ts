@@ -1,4 +1,4 @@
-declare module "ioredis-mock" {
-  import Redis from "ioredis";
+declare module 'ioredis-mock' {
+  import Redis from 'ioredis';
   export default Redis;
 }

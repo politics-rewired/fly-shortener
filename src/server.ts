@@ -1,30 +1,30 @@
-import express from "express";
+import express from 'express';
 
-import { config, LinkSourceType } from "./config";
-import { createAdminRouter } from "./lib/admin";
-import { Cache } from "./lib/cache";
-import { LinkSource } from "./lib/types";
-import { GoogleSheetsSource } from "./lib/google";
-import { Shortener } from "./lib/shortener";
+import { config, LinkSourceType } from './config';
+import { createAdminRouter } from './lib/admin';
+import { Cache } from './lib/cache';
+import { LinkSource } from './lib/types';
+import { GoogleSheetsSource } from './lib/google';
+import { Shortener } from './lib/shortener';
 
 const cache = new Cache(config.redisUrl);
 let source: LinkSource;
 if (config.source === LinkSourceType.GoogleSheets && config.googleConfig) {
   source = new GoogleSheetsSource(config.googleConfig, cache);
 } else {
-  throw new Error("Incorrectly configured link source!");
+  throw new Error('Incorrectly configured link source!');
 }
 const shortener = new Shortener({ cache, source });
 
 const app = express();
 const port = 8080; // default port to listen
 
-app.get("/favicon.ico", (req, res) => {
+app.get('/favicon.ico', (req, res) => {
   res.status(404).send();
 });
 
 // define a route handler for the default home page
-app.use("/admin", createAdminRouter(cache, shortener));
+app.use('/admin', createAdminRouter(cache, shortener));
 
 app.use(async (req, res) => {
   try {
@@ -32,38 +32,36 @@ app.use(async (req, res) => {
       exactMatch: (matchingEntry) =>
         res
           .header({
-            "Cache-Control": "no-cache",
-            "content-type": "text/html",
+            'Cache-Control': 'no-cache',
+            'content-type': 'text/html',
           })
           .send(matchingEntry),
       regexMatch: (destination) =>
         res
           .status(302)
           .header({
-            "Cache-Control": "no-cache",
+            'Cache-Control': 'no-cache',
             Location: destination,
           })
-          .send("Redirecting..."),
+          .send('Redirecting...'),
       notFound: () =>
         config.fallbackUrl
           ? res
               .status(302)
               .header({
-                "Cache-Control": "no-cache",
+                'Cache-Control': 'no-cache',
                 Location: config.fallbackUrl,
               })
-              .send("Redirecting...")
+              .send('Redirecting...')
           : res
               .status(404)
               .header({
-                "Cache-Control": "no-cache",
+                'Cache-Control': 'no-cache',
               })
-              .send("The specified route could not be found"),
+              .send('The specified route could not be found'),
     });
   } catch {
-    return res
-      .status(500)
-      .send("An internal error occured. Please try again later.");
+    return res.status(500).send('An internal error occured. Please try again later.');
   }
 });
 

@@ -1,12 +1,13 @@
-const { KJUR, KEYUTIL } = require("jsrsasign");
-import promiseRetry from "promise-retry";
-import request from "superagent";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { KJUR, KEYUTIL } = require('jsrsasign');
+import promiseRetry from 'promise-retry';
+import request from 'superagent';
 
-import { Cache, normalize } from "./cache";
-import { GoogleConfig } from "../config";
-import { LinkRecord, LinkSource } from "./types";
+import { Cache, normalize } from './cache';
+import { GoogleConfig } from '../config';
+import { LinkRecord, LinkSource } from './types';
 
-const SERVICE_ENDPOINT = "https://sheets.googleapis.com";
+const SERVICE_ENDPOINT = 'https://sheets.googleapis.com';
 
 export class GoogleSheetsSource implements LinkSource {
   private config: GoogleConfig;
@@ -18,20 +19,20 @@ export class GoogleSheetsSource implements LinkSource {
   }
 
   private createAuthJwt = (): Promise<string> => {
-    const header = JSON.stringify({ alg: "RS256", typ: "JWT" });
+    const header = JSON.stringify({ alg: 'RS256', typ: 'JWT' });
     const payload = JSON.stringify({
       iss: this.config.serviceAccountEmail,
-      scope: "https://www.googleapis.com/auth/spreadsheets.readonly",
-      aud: "https://oauth2.googleapis.com/token",
+      scope: 'https://www.googleapis.com/auth/spreadsheets.readonly',
+      aud: 'https://oauth2.googleapis.com/token',
       nbf: Math.floor(Date.now() / 1000),
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 5 * 60,
     });
 
     const rawPrivateKey = this.config.serviceAccountKey;
-    const unescapedPrivateKey = rawPrivateKey.replace(/\\n/g, "\n");
+    const unescapedPrivateKey = rawPrivateKey.replace(/\\n/g, '\n');
     const privateKey = KEYUTIL.getKey(unescapedPrivateKey);
-    return KJUR.jws.JWS.sign("RS256", header, payload, privateKey);
+    return KJUR.jws.JWS.sign('RS256', header, payload, privateKey);
   };
 
   private getAccessToken = async (): Promise<string> => {
@@ -40,18 +41,16 @@ export class GoogleSheetsSource implements LinkSource {
 
     const token = this.createAuthJwt();
     const payload = {
-      grant_type: encodeURI("urn:ietf:params:oauth:grant-type:jwt-bearer"),
+      grant_type: encodeURI('urn:ietf:params:oauth:grant-type:jwt-bearer'),
       assertion: token,
     };
-    const auth = await request
-      .post("https://oauth2.googleapis.com/token")
-      .send(payload);
+    const auth = await request.post('https://oauth2.googleapis.com/token').send(payload);
     const { access_token } = await auth.body;
     await this.cache.setGoogleAccessToken(access_token);
     return access_token;
   };
 
-  fetchEntries = () =>
+  fetchEntries = (): Promise<LinkRecord[]> =>
     promiseRetry({ retries: 1 }, async (retry, attempt) => {
       const accessToken = await this.getAccessToken();
 
@@ -68,7 +67,7 @@ export class GoogleSheetsSource implements LinkSource {
           .map((row) => ({
             from: normalize(row[0]),
             to: row[1],
-            isRegex: row[2] === "TRUE",
+            isRegex: row[2] === 'TRUE',
           }))
           .filter(({ from, to }) => !!from && !!to);
 
@@ -77,11 +76,9 @@ export class GoogleSheetsSource implements LinkSource {
         const isAuthErr = err.status === 401 || err.status === 403;
         if (attempt === 1 && isAuthErr) {
           await this.cache.delGoogleAccessToken();
-          return retry(new Error("expired access token"));
+          return retry(new Error('expired access token'));
         } else {
-          throw new Error(
-            `Could not fetch sheet entries: [${err.status}] ${err.response.body}`
-          );
+          throw new Error(`Could not fetch sheet entries: [${err.status}] ${err.response.body}`);
         }
       }
     });

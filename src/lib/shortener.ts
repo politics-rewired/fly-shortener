@@ -1,12 +1,12 @@
-import getMeta from "lets-get-meta";
-import { DateTime } from "luxon";
-import promiseRetry from "promise-retry";
-import request from "superagent";
+import getMeta from 'lets-get-meta';
+import { DateTime } from 'luxon';
+import promiseRetry from 'promise-retry';
+import request from 'superagent';
 
-import { Cache } from "./cache";
-import { LinkRecord, LinkSource } from "./types";
+import { Cache } from './cache';
+import { LinkRecord, LinkSource } from './types';
 
-const currentYYMMDD = () => DateTime.now().toFormat("yyMMdd");
+const currentYYMMDD = () => DateTime.now().toFormat('yyMMdd');
 
 export interface LookupPathOptions {
   exactMatch: (matchingEntry: string) => void;
@@ -38,20 +38,18 @@ export class Shortener {
     const destination = record.to.replace(/YYMMDD/g, currentYYMMDD());
 
     try {
-      const html = await request
-        .get(record.to)
-        .then((response) => response.text);
+      const html = await request.get(record.to).then((response) => response.text);
       const metas = getMeta(html);
       metas.refresh = destination;
 
       const metaDoms = Object.entries(metas).map(([key, value]) =>
-        key === "refresh"
+        key === 'refresh'
           ? `<meta http-equiv="${key}" content="0;${value}" />`
           : `<meta name="${key}" content="${value}" />`
       );
       const richRedirect = `
         <html><head>
-        ${metaDoms.join("\n")}
+        ${metaDoms.join('\n')}
         </head></html>
       `;
 
@@ -66,7 +64,7 @@ export class Shortener {
     }
   };
 
-  refreshCache = async (path?: string) => {
+  refreshCache = async (path?: string): Promise<void> => {
     const rows = await this.source.fetchEntries();
 
     // Persist list of regex entries to cache
@@ -78,20 +76,18 @@ export class Shortener {
     if (path) {
       regularEntries = regularEntries.filter((r) => r.from === path);
     }
-    const regularEntriesPromise = regularEntries.map(
-      this.persistRecordWithMetadata
-    );
+    const regularEntriesPromise = regularEntries.map(this.persistRecordWithMetadata);
 
-    return Promise.all([regexEntriesPromise, ...regularEntriesPromise]);
+    await Promise.all([regexEntriesPromise, ...regularEntriesPromise]);
   };
 
-  lookup = async (path: string, options: LookupPathOptions) =>
+  lookup = async (path: string, options: LookupPathOptions): Promise<void> =>
     promiseRetry({ retries: 1 }, async (retry, attempt) => {
       // Look for exact match
       const matchingEntry = await this.cache.getEntry(path);
       if (matchingEntry) {
         // Short-lived cache to prevent duplicate updates for links that were not present
-        if (matchingEntry === "404") {
+        if (matchingEntry === '404') {
           return options.notFound();
         }
         return options.exactMatch(matchingEntry);
@@ -101,7 +97,7 @@ export class Shortener {
       const regexEntries = await this.cache.getRegexEntries();
       for (const [pattern, replacement] of regexEntries) {
         if (path.match(pattern)) {
-          let destination = path.replace(new RegExp(pattern, "g"), replacement);
+          let destination = path.replace(new RegExp(pattern, 'g'), replacement);
 
           destination = destination.replace(/YYMMDD/g, currentYYMMDD());
 
@@ -112,7 +108,7 @@ export class Shortener {
       if (attempt === 1) {
         // Refresh the cache for this path if no match
         await this.refreshCache(path);
-        return retry("attempt after cache refresh");
+        return retry('attempt after cache refresh');
       } else {
         await this.cache.set404Entry(path);
         return options.notFound();

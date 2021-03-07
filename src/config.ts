@@ -1,17 +1,11 @@
-require("dotenv").config();
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
 
-import {
-  cleanEnv,
-  CleanedEnvAccessors,
-  str,
-  url,
-  email,
-  makeValidator,
-} from "envalid";
+import { cleanEnv, CleanedEnvAccessors, str, url, email, makeValidator } from 'envalid';
 
 export enum LinkSourceType {
-  GoogleSheets = "google-sheets",
-  Airtable = "airtable",
+  GoogleSheets = 'google-sheets',
+  Airtable = 'airtable',
 }
 
 export interface GoogleConfig {
