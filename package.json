@@ -7,6 +7,7 @@
     "email": "benjamin.chrobot@alum.mit.edu",
     "url": "https://benjaminchrobot.com"
   },
+  "license": "MIT",
   "repository": "github:politics-rewired/fly-shortener",
   "bugs": "https://github.com/politics-rewired/fly-shortener/issues",
   "scripts": {
