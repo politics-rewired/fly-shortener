@@ -15,11 +15,11 @@ Create a service account on Google Cloud and download the JSON credentials. This
 It should have one sheet with the following columns in order. There can be other columns, these three just need to be next to each other in this order.
 
 1. **From** -- The URL path on the shortener
-    - ex. `/sat-event`
+   - ex. `/sat-event`
 1. **To** -- The destination URL. This supports using a special `YYMMDD` sequence that will be replaced with the current date (useful for tracking campaigns)
-    - ex. `https://alongdomain.com/path/to/url?source=twitter-YYMMDD`
+   - ex. `https://alongdomain.com/path/to/url?source=twitter-YYMMDD`
 1. **Is Regex** -- boolean column (`TRUE` or `FALSE`) indicating whether the link record does regex matching
-    - ex. From: `/event/(.*)$` To: `https://eventplatform.com/event/$1`
+   - ex. From: `/event/(.*)$` To: `https://eventplatform.com/event/$1`
 
 Grant read access on the document to the service account email address.
 
