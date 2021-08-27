@@ -60,7 +60,8 @@ app.use(async (req, res) => {
               })
               .send('The specified route could not be found'),
     });
-  } catch {
+  } catch (err) {
+    console.error(err);
     return res.status(500).send('An internal error occured. Please try again later.');
   }
 });

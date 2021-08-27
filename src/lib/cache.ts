@@ -24,7 +24,7 @@ const pathKey = (path: string) => `${EntryCacheKeys.EntryTag}:${path}`;
 const regexReducer = (acc: string[][], current: LinkRecord): string[][] =>
   acc.concat([[current.from, current.to]]);
 
-export const normalize = (str: string): string => str.toLowerCase().trim();
+export const normalize = (str: string): string => (str ?? '').toLowerCase().trim();
 
 export class Cache {
   public client: Redis.Redis;

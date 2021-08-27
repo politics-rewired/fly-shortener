@@ -78,7 +78,9 @@ export class GoogleSheetsSource implements LinkSource {
           await this.cache.delGoogleAccessToken();
           return retry(new Error('expired access token'));
         } else {
-          throw new Error(`Could not fetch sheet entries: [${err.status}] ${err.response.body}`);
+          console.error(err);
+          const { status = 'unknown', response: { body } = { body: 'unknown' } } = err;
+          throw new Error(`Could not fetch sheet entries: [${status}] ${body}`);
         }
       }
     });
