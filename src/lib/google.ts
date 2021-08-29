@@ -5,7 +5,7 @@ import request from 'superagent';
 
 import { Cache, normalize } from './cache';
 import { GoogleConfig } from '../config';
-import { LinkRecord, LinkSource } from './types';
+import { isSuperagentError, LinkRecord, LinkSource } from './types';
 
 const SERVICE_ENDPOINT = 'https://sheets.googleapis.com';
 
@@ -73,15 +73,19 @@ export class GoogleSheetsSource implements LinkSource {
 
         return entries;
       } catch (err) {
-        const isAuthErr = err.status === 401 || err.status === 403;
-        if (attempt === 1 && isAuthErr) {
-          await this.cache.delGoogleAccessToken();
-          return retry(new Error('expired access token'));
-        } else {
-          console.error(err);
-          const { status = 'unknown', response: { body } = { body: 'unknown' } } = err;
-          throw new Error(`Could not fetch sheet entries: [${status}] ${body}`);
+        if (isSuperagentError(err)) {
+          const isAuthErr = err.status === 401 || err.status === 403;
+          if (attempt === 1 && isAuthErr) {
+            await this.cache.delGoogleAccessToken();
+            return retry(new Error('expired access token'));
+          } else {
+            console.error(err);
+            const { status = 'unknown', response: { body } = { body: 'unknown' } } = err;
+            throw new Error(`Could not fetch sheet entries: [${status}] ${body}`);
+          }
         }
+        console.error(err);
+        throw new Error(`Encountered unexpected error: ${err}`);
       }
     });
 }
