@@ -94,7 +94,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ./.deploy/api/Dockerfile
           tags: |
             us-east4-docker.pkg.dev/assemble-services/apps/link-shortener:latest
             us-east4-docker.pkg.dev/assemble-services/apps/link-shortener:${{ steps.image-tags.outputs.sha }}
