@@ -9,7 +9,7 @@ RUN jq '{ dependencies, devDependencies, resolutions }' < /tmp/package.json > /t
 
 ### Fat Build
 ### -------------------------
-FROM node:14.16.0 as builder
+FROM node:14.17.5 as builder
 
 WORKDIR /usr/link-shortener
 
@@ -24,7 +24,7 @@ RUN yarn build
 
 ### Slim Deploy
 ### -------------------------
-FROM node:14.16.0
+FROM node:14.17.5
 
 WORKDIR /usr/link-shortener
 
