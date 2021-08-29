@@ -24,6 +24,10 @@ app.get('/favicon.ico', (req, res) => {
   res.status(404).send();
 });
 
+app.get('/healthz', (req, res) => {
+  res.sendStatus(200);
+});
+
 // define a route handler for the default home page
 app.use('/admin', createAdminRouter(cache, shortener));
 
