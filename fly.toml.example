@@ -3,6 +3,9 @@ app = "my-link-shortener"
 kill_signal = "SIGINT"
 kill_timeout = 5
 
+[build]
+  image = "us-east4-docker.pkg.dev/assemble-services/apps/link-shortener:latest"
+
 [[services]]
   internal_port = 8080
   protocol = "tcp"
