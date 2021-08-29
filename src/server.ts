@@ -17,6 +17,7 @@ if (config.source === LinkSourceType.GoogleSheets && config.googleConfig) {
 const shortener = new Shortener({ cache, source });
 
 const app = express();
+const host = '0.0.0.0';
 const port = 8080; // default port to listen
 
 app.get('/favicon.ico', (req, res) => {
@@ -67,6 +68,6 @@ app.use(async (req, res) => {
 });
 
 // start the Express server
-app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`);
+app.listen(port, host, () => {
+  console.log(`server started at http://${host}:${port}`);
 });
