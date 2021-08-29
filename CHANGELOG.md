@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/politics-rewired/fly-shortener/compare/v1.0.0...v1.1.0) (2021-08-29)
+
+
+### Features
+
+* add healthcheck ([a65628c](https://github.com/politics-rewired/fly-shortener/commit/a65628ca1360260eafc8df694db2544f125015d6))
+
+
+### Bug Fixes
+
+* handle empty values and log errors ([e880993](https://github.com/politics-rewired/fly-shortener/commit/e88099305d3303c12fc82ae37488b7c080186af1))
+
 ## 1.0.0 (2021-03-07)
 
 
