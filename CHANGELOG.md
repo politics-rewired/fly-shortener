@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/politics-rewired/fly-shortener/compare/v1.1.0...v1.2.0) (2021-08-30)
+
+
+### Features
+
+* add timezone support for date code replacement ([9bba388](https://github.com/politics-rewired/fly-shortener/commit/9bba38873fa1701f689ced57fca4ea3fc607fe52))
+
 ## [1.1.0](https://github.com/politics-rewired/fly-shortener/compare/v1.0.0...v1.1.0) (2021-08-29)
 
 
