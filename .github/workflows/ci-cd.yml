@@ -72,9 +72,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-sooke-portal-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-fly-shortener-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-sooke-portal-
+            ${{ runner.os }}-buildx-fly-shortener-
 
       - name: Get image tags
         id: image-tags
