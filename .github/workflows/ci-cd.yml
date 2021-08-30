@@ -65,6 +65,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
         with:
           version: latest
+          buildkitd-flags: --debug
 
       # Caching strategy from: https://github.com/docker/build-push-action/blob/master/docs/advanced/cache.md#github-cache
       - name: Cache Docker layers for ${{ matrix.service }}
