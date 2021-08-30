@@ -23,6 +23,7 @@ export interface AirtableConfig {
 interface Config extends CleanedEnvAccessors {
   adminSecret: string;
   fallbackUrl: string;
+  timezone: string;
   redisUrl?: string;
   source: LinkSourceType;
   googleConfig?: GoogleConfig;
@@ -44,6 +45,7 @@ const env = cleanEnv(process.env, {
   ADMIN_SECRET: str({}),
   FALLBACK_URL: url({}),
   FLY_REDIS_CACHE_URL: str({ default: undefined }),
+  TIMEZONE: str({}),
   SOURCE: linkSource({
     choices: Object.values(LinkSourceType),
     default: LinkSourceType.GoogleSheets,
@@ -88,6 +90,7 @@ export const config: Config = {
   ...envConfig,
   adminSecret: env.ADMIN_SECRET,
   fallbackUrl: env.FALLBACK_URL,
+  timezone: env.TIMEZONE,
   redisUrl: env.FLY_REDIS_CACHE_URL,
   source: env.SOURCE,
   googleConfig,

@@ -5,8 +5,9 @@ import request from 'superagent';
 
 import { Cache } from './cache';
 import { LinkRecord, LinkSource } from './types';
+import { config } from '../config';
 
-const currentYYMMDD = () => DateTime.now().toFormat('yyMMdd');
+const currentYYMMDD = () => DateTime.now().setZone(config.timezone).toFormat('yyMMdd');
 
 export interface LookupPathOptions {
   exactMatch: (matchingEntry: string) => void;
