@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/politics-rewired/fly-shortener/compare/v1.2.0...v1.2.1) (2021-11-04)
+
+
+### Bug Fixes
+
+* use timezone config for cache ttl ([#29](https://github.com/politics-rewired/fly-shortener/issues/29)) ([a15c4e0](https://github.com/politics-rewired/fly-shortener/commit/a15c4e080b9ff525ca5745982ce7b2355adb0692))
+
 ## [1.2.0](https://github.com/politics-rewired/fly-shortener/compare/v1.1.0...v1.2.0) (2021-08-30)
 
 
