@@ -2,6 +2,7 @@ import { DateTime } from 'luxon';
 import Redis from 'ioredis';
 import FakeRedis from 'ioredis-mock';
 
+import { config } from '../config';
 import { LinkRecord } from './types';
 
 const EntryCacheKeys = Object.freeze({
@@ -17,7 +18,7 @@ const TTL_404 = 5 * 60; // Five minutes
 
 // Expire record at the end of the day. Compute every time to prevent caching by Fly
 export const secondsToEod = (): number =>
-  Math.round(DateTime.now().endOf('day').diffNow('seconds').seconds);
+  Math.round(DateTime.now().setZone(config.timezone).endOf('day').diffNow('seconds').seconds);
 
 const pathKey = (path: string) => `${EntryCacheKeys.EntryTag}:${path}`;
 
