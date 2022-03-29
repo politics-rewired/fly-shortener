@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/politics-rewired/fly-shortener/compare/v1.3.0...v1.3.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* remove ioredis-mock ([694ba2f](https://github.com/politics-rewired/fly-shortener/commit/694ba2f344cefb9b9d488e17aaeb6695990064df))
+
 ## [1.3.0](https://github.com/politics-rewired/fly-shortener/compare/v1.2.3...v1.3.0) (2022-03-29)
 
 
