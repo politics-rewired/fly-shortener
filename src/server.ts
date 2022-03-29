@@ -7,7 +7,7 @@ import { LinkSource } from './lib/types';
 import { GoogleSheetsSource } from './lib/google';
 import { Shortener } from './lib/shortener';
 
-const cache = new Cache(config.redisUrl);
+const cache = new Cache(config.redis);
 let source: LinkSource;
 if (config.source === LinkSourceType.GoogleSheets && config.googleConfig) {
   source = new GoogleSheetsSource(config.googleConfig, cache);

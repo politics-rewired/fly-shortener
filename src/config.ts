@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-import { cleanEnv, CleanedEnvAccessors, str, url, email, makeValidator } from 'envalid';
+import { cleanEnv, CleanedEnvAccessors, str, url, email, makeValidator, port, num } from 'envalid';
 
 export enum LinkSourceType {
   GoogleSheets = 'google-sheets',
@@ -20,11 +20,21 @@ export interface AirtableConfig {
   base: string;
 }
 
+export interface RedisBlockConfig {
+  port: number;
+  family: number;
+  host: string;
+  username: string;
+  password: string;
+}
+
+export type RedisConfig = string | RedisBlockConfig;
+
 interface Config extends CleanedEnvAccessors {
   adminSecret: string;
   fallbackUrl: string;
   timezone: string;
-  redisUrl?: string;
+  redis?: RedisConfig;
   source: LinkSourceType;
   googleConfig?: GoogleConfig;
   airtableConfig?: AirtableConfig;
@@ -45,6 +55,11 @@ const env = cleanEnv(process.env, {
   ADMIN_SECRET: str({}),
   FALLBACK_URL: url({}),
   REDIS_URL: str({ default: undefined }),
+  REDIS_PORT: port({ default: 6379 }),
+  REDIS_FAMILY: num({ devDefault: 4, default: 6 }),
+  REDIS_HOST: str({ default: undefined }),
+  REDIS_USERNAME: str({ devDefault: undefined, default: 'default' }),
+  REDIS_PASSWORD: str({ default: undefined }),
   TIMEZONE: str({}),
   SOURCE: linkSource({
     choices: Object.values(LinkSourceType),
@@ -86,12 +101,22 @@ const envConfig = {
   isTest: env.isTest,
 };
 
+const redis: RedisConfig = env.REDIS_URL
+  ? env.REDIS_URL
+  : {
+      port: env.REDIS_PORT,
+      family: env.REDIS_FAMILY,
+      host: env.REDIS_HOST,
+      username: env.REDIS_USERNAME,
+      password: env.REDIS_PASSWORD,
+    };
+
 export const config: Config = {
   ...envConfig,
   adminSecret: env.ADMIN_SECRET,
   fallbackUrl: env.FALLBACK_URL,
   timezone: env.TIMEZONE,
-  redisUrl: env.REDIS_URL,
+  redis,
   source: env.SOURCE,
   googleConfig,
   airtableConfig,
