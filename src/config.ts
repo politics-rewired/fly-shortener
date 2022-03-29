@@ -34,7 +34,7 @@ interface Config extends CleanedEnvAccessors {
   adminSecret: string;
   fallbackUrl: string;
   timezone: string;
-  redis?: RedisConfig;
+  redis: RedisConfig;
   source: LinkSourceType;
   googleConfig?: GoogleConfig;
   airtableConfig?: AirtableConfig;

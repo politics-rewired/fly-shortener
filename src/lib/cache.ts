@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon';
 import Redis from 'ioredis';
-import FakeRedis from 'ioredis-mock';
 
 import { config, RedisConfig } from '../config';
 import { LinkRecord } from './types';
@@ -30,9 +29,9 @@ export const normalize = (str: string): string => (str ?? '').toLowerCase().trim
 export class Cache {
   public client: Redis;
 
-  constructor(config?: RedisConfig) {
-    this.client = config
-      ? typeof config === 'string'
+  constructor(config: RedisConfig) {
+    this.client =
+      typeof config === 'string'
         ? config === 'redis://localhost'
           ? new Redis()
           : new Redis(config)
@@ -42,8 +41,7 @@ export class Cache {
             host: config.host,
             username: config.username,
             password: config.password,
-          })
-      : new FakeRedis();
+          });
   }
 
   clearEntries = async (): Promise<void> => {
