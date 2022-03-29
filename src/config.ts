@@ -44,7 +44,7 @@ const linkSource = makeValidator<LinkSourceType>((input) => {
 const env = cleanEnv(process.env, {
   ADMIN_SECRET: str({}),
   FALLBACK_URL: url({}),
-  REDIS_URL: url({ default: undefined }),
+  REDIS_URL: str({ default: undefined }),
   TIMEZONE: str({}),
   SOURCE: linkSource({
     choices: Object.values(LinkSourceType),
