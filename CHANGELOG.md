@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/politics-rewired/fly-shortener/compare/v1.3.1...v1.3.2) (2022-03-29)
+
+
+### Bug Fixes
+
+* skip executing empty key deletes ([de9988a](https://github.com/politics-rewired/fly-shortener/commit/de9988aba6fbf58a2e1205ea7c3b04a63688bd76))
+
 ### [1.3.1](https://github.com/politics-rewired/fly-shortener/compare/v1.3.0...v1.3.1) (2022-03-29)
 
 
