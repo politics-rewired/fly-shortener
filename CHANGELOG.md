@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/politics-rewired/fly-shortener/compare/v1.2.3...v1.3.0) (2022-03-29)
+
+
+### Features
+
+* support ipv6 redis connections ([13311fa](https://github.com/politics-rewired/fly-shortener/commit/13311fac76c6f32606a94e929c62b160c06d57cb))
+
 ### [1.2.3](https://github.com/politics-rewired/fly-shortener/compare/v1.2.2...v1.2.3) (2022-03-29)
 
 
