@@ -51,7 +51,9 @@ export class Cache {
     const stream = this.client.scanStream({ match: entryPattern });
     const delPromises: Promise<number>[] = [];
     stream.on('data', (resultKeys) => {
-      delPromises.push(this.client.del(...resultKeys));
+      if (resultKeys.length > 0) {
+        delPromises.push(this.client.del(...resultKeys));
+      }
     });
     await Promise.all(delPromises);
 
