@@ -44,7 +44,7 @@ const linkSource = makeValidator<LinkSourceType>((input) => {
 const env = cleanEnv(process.env, {
   ADMIN_SECRET: str({}),
   FALLBACK_URL: url({}),
-  FLY_REDIS_CACHE_URL: str({ default: undefined }),
+  REDIS_URL: url({ default: undefined }),
   TIMEZONE: str({}),
   SOURCE: linkSource({
     choices: Object.values(LinkSourceType),
@@ -91,7 +91,7 @@ export const config: Config = {
   adminSecret: env.ADMIN_SECRET,
   fallbackUrl: env.FALLBACK_URL,
   timezone: env.TIMEZONE,
-  redisUrl: env.FLY_REDIS_CACHE_URL,
+  redisUrl: env.REDIS_URL,
   source: env.SOURCE,
   googleConfig,
   airtableConfig,
