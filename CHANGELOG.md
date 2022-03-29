@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.3](https://github.com/politics-rewired/fly-shortener/compare/v1.2.2...v1.2.3) (2022-03-29)
+
+
+### Bug Fixes
+
+* revert redis url envvar type ([1f5ab57](https://github.com/politics-rewired/fly-shortener/commit/1f5ab57833e8c43fd78e64932adecbec2dd63d79))
+
 ### [1.2.2](https://github.com/politics-rewired/fly-shortener/compare/v1.2.1...v1.2.2) (2022-03-29)
 
 
