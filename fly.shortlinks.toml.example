@@ -1,4 +1,4 @@
-app = "my-link-shortener"
+app = "myorg-shortlinks"
 
 kill_signal = "SIGINT"
 kill_timeout = 5

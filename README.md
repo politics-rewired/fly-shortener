@@ -31,11 +31,47 @@ Copy the range of the short links in [A1 notation](https://developers.google.com
 
 See [installation docs](https://fly.io/docs/getting-started/installing-flyctl/) for platform-specific instructions.
 
+
+## Configure Secrets
+
+```sh
+cp .env.example .env
+vi .env
+```
+
+## Launching Redis Application
+
+Fly deprecated their Redis offering and now recommends running your own:
+
 ### Create Fly Configuration
 
 ```sh
-cp fly.toml.example fly.prod.toml
-vi fly.prod.toml
+cp fly.redis.toml.example fly.redis.toml
+vi fly.redis.toml
+```
+
+### Launch Application
+
+```sh
+flyctl apps create --name myorg-redis
+flyctl volumes create --app myorg-redis myorg_redis_server --region ewr --size 4
+flyctl secrets set --app myorg-redis REDIS_PASSWORD="SomethingElseSecretAndComplicated"
+flyctl deploy --config fly.redis.toml
+```
+
+## Launching Shortlinks Application
+
+### Create Fly Configuration
+
+```sh
+cp fly.shortlinks.toml.example fly.shortlinks.toml
+vi fly.shortlinks.toml
+```
+
+### Create Fly Application
+
+```sh
+flyctl apps create --name myorg-shortlinks
 ```
 
 ### Configure Secrets
@@ -43,14 +79,11 @@ vi fly.prod.toml
 Set application environment variables via [Fly Secrets](https://fly.io/docs/reference/secrets/):
 
 ```sh
-cp .env.example .env.prod
-vi .env.prod
-
-awk '!/^#/ && NF' .env.prod | xargs -p flyctl secrets set --config fly.prod.toml
+awk '!/^#/ && NF' .env | xargs -p flyctl secrets set --config fly.shortlinks.toml
 ```
 
-### Run `fly`
+### Launch Application
 
 ```sh
-flyctl deploy --config fly.prod.toml
+flyctl deploy --config fly.shortlinks.toml
 ```
