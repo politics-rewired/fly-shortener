@@ -29,7 +29,7 @@
     "envalid": "^7.2.1",
     "express": "^4.17.1",
     "ioredis": "^5.0.1",
-    "jsrsasign": "^10.4.0",
+    "jsrsasign": "^10.5.25",
     "lets-get-meta": "^2.1.1",
     "luxon": "^2.0.2",
     "promise-retry": "^2.0.1",
