@@ -38,6 +38,7 @@ interface Config extends CleanedEnvAccessors {
   source: LinkSourceType;
   googleConfig?: GoogleConfig;
   airtableConfig?: AirtableConfig;
+  visitTrackingUrl?: string;
 }
 
 const linkSource = makeValidator<LinkSourceType>((input) => {
@@ -71,6 +72,7 @@ const env = cleanEnv(process.env, {
   GOOGLE_SERVICE_ACCOUNT_KEY: str({ default: undefined }),
   AIRTABLE_API_KEY: str({ default: undefined }),
   AIRTABLE_BASE: str({ default: undefined }),
+  VISIT_TRACKING_URL: url({ default: undefined }),
 });
 
 const googleConfig: GoogleConfig | undefined =
@@ -118,6 +120,7 @@ export const config: Config = {
   timezone: env.TIMEZONE,
   redis,
   source: env.SOURCE,
+  visitTrackingUrl: env.VISIT_TRACKING_URL,
   googleConfig,
   airtableConfig,
 };

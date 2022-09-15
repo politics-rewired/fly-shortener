@@ -6,6 +6,7 @@ import { Cache } from './lib/cache';
 import { LinkSource } from './lib/types';
 import { GoogleSheetsSource } from './lib/google';
 import { Shortener } from './lib/shortener';
+import request from 'superagent';
 
 const cache = new Cache(config.redis);
 let source: LinkSource;
@@ -28,27 +29,57 @@ app.get('/healthz', (req, res) => {
   res.sendStatus(200);
 });
 
+type Visit = {
+  path: string;
+  destination: string;
+  query: Record<string, unknown>;
+};
+
+const maybeTryLoggingVisit = async (visit: Visit) => {
+  if (config.visitTrackingUrl) {
+    try {
+      await request.post(config.visitTrackingUrl).send(visit);
+    } catch (ex) {
+      console.error('Error communicating with visit tracker', ex);
+    }
+  }
+};
+
 // define a route handler for the default home page
 app.use('/admin', createAdminRouter(cache, shortener));
 
 app.use(async (req, res) => {
   try {
     await shortener.lookup(req.path, {
-      exactMatch: (matchingEntry) =>
-        res
+      exactMatch: (matchingEntry) => {
+        maybeTryLoggingVisit({
+          path: req.path,
+          destination: matchingEntry,
+          query: req.query,
+        });
+
+        return res
           .header({
             'Cache-Control': 'no-cache',
             'content-type': 'text/html',
           })
-          .send(matchingEntry),
-      regexMatch: (destination) =>
-        res
+          .send(matchingEntry);
+      },
+      regexMatch: (destination) => {
+        maybeTryLoggingVisit({
+          path: req.path,
+          destination: destination,
+          query: req.query,
+        });
+
+        return res
           .status(302)
           .header({
             'Cache-Control': 'no-cache',
             Location: destination,
           })
-          .send('Redirecting...'),
+          .send('Redirecting...');
+      },
       notFound: () =>
         config.fallbackUrl
           ? res
