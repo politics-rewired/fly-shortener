@@ -31,7 +31,7 @@
     "ioredis": "^5.0.1",
     "jsrsasign": "^10.4.0",
     "lets-get-meta": "^2.1.1",
-    "luxon": "^2.0.2",
+    "luxon": "^2.5.2",
     "promise-retry": "^2.0.1",
     "superagent": "^6.1.0"
   },
