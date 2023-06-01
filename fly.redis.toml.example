@@ -8,6 +8,8 @@ processes = []
 
 [[mounts]]
   destination = "/data"
+  encrypted = false
+  processes = []
   source = "myorg_redis_server"
 
 [metrics]
@@ -20,7 +22,17 @@ processes = []
 [env]
 
 [experimental]
-  allowed_public_ports = []
   auto_rollback = true
 
-# [[services]]
+[[services]]
+  http_checks = []
+  internal_port = 8080
+  ports = []
+  processes = []
+  protocol = "tcp"
+  script_checks = []
+  tcp_checks = []
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
